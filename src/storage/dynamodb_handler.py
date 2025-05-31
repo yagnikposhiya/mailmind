@@ -29,6 +29,7 @@ def store_email_log(email_data:dict) -> None:
 
     email_item = {
         "email_id": str(uuid.uuid4()),  # unique ID
+        "email_msg_id": email_data.get("email_msg_id",""),
         "from_name": email_data.get("from_name", ""),
         "from_email": email_data.get("from_email", ""),
         "to": email_data.get("to", ""),
@@ -36,6 +37,9 @@ def store_email_log(email_data:dict) -> None:
         "body": email_data.get("body", ""),
         "date": email_data.get("date", ""),
         "time": email_data.get("time", ""),
-        "status": "received"
+        "status": "received",
+        "category": email_data.get("category",""),
+        "extracted_info": email_data.get("extracted_info",""),
+        "email_reply": email_data.get("email_reply","")
     }
     table.put_item(Item=email_item)
