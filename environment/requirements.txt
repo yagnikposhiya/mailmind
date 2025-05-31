@@ -4,3 +4,4 @@ boto3==1.38.25
 openai==1.82.0
 python-docx==1.1.2
 faiss-cpu==1.11.0
+pandas==2.2.3
