@@ -121,8 +121,12 @@ def fetch_unread_emails() -> Any:
             # if email has only one single part plain text
             body = msg.get_payload(decode=True).decode("utf-8", errors="ignore")
 
+        # get message id
+        email_msg_id = msg.get("Message-ID")
+
         # append the extracted details to the list
         email_list.append({
+            "email_msg_id": email_msg_id,
             "from_name": from_name,
             "from_email": from_email,
             "to": to_email,
