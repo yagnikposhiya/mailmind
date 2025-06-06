@@ -29,15 +29,17 @@ if emails:
         mail['category'] = category # append category to mail metadata and content dict
         print("Predicted category:", category)
 
-        extracted_info = extract_email_info(mail['subject'], mail['body'])
-        mail['extracted_info'] = extracted_info # append extracted_info column to mail metadata and content dict
-        print(f"Extracted information: {extracted_info}")
+        if category.lower() != "other": # if email is categorized in "other"; consider it spam email.
 
-        reply_mail = generate_reply_mail(category, extracted_info) # generate a mail reply
-        mail['email_reply'] = reply_mail
-        print(f"Reply mail: {reply_mail}")
+            extracted_info = extract_email_info(mail['subject'], mail['body'])
+            mail['extracted_info'] = extracted_info # append extracted_info column to mail metadata and content dict
+            print(f"Extracted information: {extracted_info}")
 
-        send_email_reply(mail['from_email'], mail['subject'], reply_mail, mail['email_msg_id']) # send an email reply
+            reply_mail = generate_reply_mail(category, extracted_info) # generate a mail reply
+            mail['email_reply'] = reply_mail
+            print(f"Reply mail: {reply_mail}")
 
-        store_email_log(mail) # save email metadata with body content
-        print(f"Stored email from: {mail['from_email']}")
+            send_email_reply(mail['from_email'], mail['subject'], reply_mail, mail['email_msg_id']) # send an email reply
+
+            store_email_log(mail) # save email metadata with body content
+            print(f"Stored email from: {mail['from_email']}")
