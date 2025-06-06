@@ -13,7 +13,7 @@ import boto3
 from docx import Document # for parsing word documents
 from dotenv import load_dotenv
 from io import BytesIO, StringIO
-from utils.csv_converter import convert_csv_to_chunks
+from utils.utils import convert_csv_to_chunks
 
 load_dotenv() # load environment variables from .env file
 
