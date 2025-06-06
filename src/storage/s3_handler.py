@@ -13,19 +13,21 @@ import boto3
 from docx import Document # for parsing word documents
 from dotenv import load_dotenv
 from io import BytesIO, StringIO
+from utils.utils import load_config
 from utils.utils import convert_csv_to_chunks
 
 load_dotenv() # load environment variables from .env file
+config = load_config() # load project configuration
 
 # initialize s3 client using credentials from environment
 s3 = boto3.client(
     "s3",
-    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID"),
-    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY"),
-    region_name=os.getenv("AWS_REGION")
+    aws_access_key_id=os.getenv("AWS_ACCESS_KEY_ID") if config["flags"]["credentials_from_env"] else "<access_key>",
+    aws_secret_access_key=os.getenv("AWS_SECRET_ACCESS_KEY") if config["flags"]["credentials_from_env"] else "<secret_access_key>",
+    region_name=config["aws"]["s3"]["bucket_region"]
 )
 
-BUCKET_NAME = os.getenv("AWS_S3_BUCKET_NAME")
+BUCKET_NAME = config["aws"]["s3"]["bucket_name"]
 
 def read_all_documents_from_s3(prefix:str="") -> dict:
     """

@@ -9,11 +9,13 @@ import os
 import uuid
 import boto3
 
-from dotenv import load_dotenv
+from utils.utils import load_config
+
+config = load_config() # load project configuration
 
 # load config
-TABLE_NAME = os.getenv("DYNAMODB_TABLE_NAME")
-REGION = os.getenv("AWS_REGION")
+TABLE_NAME = config["aws"]["dynamodb"]["table_name"]
+REGION = config ["aws"]["dynamodb"]["db_region"]
 
 # create dynamodb client
 dynamodb = boto3.resource("dynamodb", region_name=REGION)

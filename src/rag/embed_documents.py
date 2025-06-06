@@ -28,13 +28,16 @@ import numpy as np
 from typing import Any
 from openai import OpenAI
 from dotenv import load_dotenv
+from utils.utils import load_config
 from storage.s3_handler import read_all_documents_from_s3
 
 load_dotenv() # load environment variables from .env file
+config = load_config() # load project configuration
 
 # initialize OpenAI cliet with OpenRouter base_url
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+    base_url=config["api_endpoint"]["openai"],
+    api_key=os.getenv("OPENAI_API_KEY") if config["flags"]["credentials_from_env"] else "<api_key>"
 )
 
 def chunk_text(text:str, max_length:int=500) -> list:
@@ -79,7 +82,7 @@ def embed_chunks_openai(chunks: list) -> np.ndarray:
 
     # send all chunks to OpenAI embedding API for vector representation
     response = client.embeddings.create(
-        model = "text-embedding-3-small", # e.g. text-embedding-3-small
+        model = config["embedding_model"]["openai"], # e.g. text-embedding-3-small
         input=chunks
     )
 

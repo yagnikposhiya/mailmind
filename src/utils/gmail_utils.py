@@ -11,14 +11,16 @@ import imaplib
 
 from dotenv import load_dotenv
 from typing import Any, List, Dict
+from utils.utils import load_config
 from email.header import decode_header
 from email.utils import parseaddr, parsedate_to_datetime
 
 load_dotenv() # load environment variables from .env file
+config = load_config() # load project configuration
 
 # Gmail credentials loaded from environment
-GMAIL_USER = os.getenv("GMAIL_ADDRESS")
-GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD")
+GMAIL_USER = os.getenv("GMAIL_ADDRESS") if config["flags"]["credentials_from_env"] else "<gmail_addr>"
+GMAIL_APP_PASSWORD = os.getenv("GMAIL_APP_PASSWORD") if config["flags"]["credentials_from_env"] else "<gmail_app_passwd>"
 
 def connect_to_gmail() -> Any:
     """
@@ -29,7 +31,7 @@ def connect_to_gmail() -> Any:
         - imaplib.IMAP4_SSL: Autheticated IMAP connection object.
     """
 
-    imap = imaplib.IMAP4_SSL("imap.gmail.com")
+    imap = imaplib.IMAP4_SSL(config["gmail"]["imap_host"])
     imap.login(GMAIL_USER,GMAIL_APP_PASSWORD)
     return imap
 

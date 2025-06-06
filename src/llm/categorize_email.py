@@ -10,13 +10,15 @@ import os
 
 from openai import OpenAI
 from dotenv import load_dotenv
+from utils.utils import load_config
 
 load_dotenv() # load environment variables from .env file
+config = load_config() # load project configuration
 
 # load OpenAI API key from environment
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1", # without this OpenAI SDK sends requests to a default server i.e. https://api.openai.com/v1; but given is the defualt server for OpenRouter
-    api_key=os.getenv("OPENROUTER_API_KEY")
+    base_url=config["api_endpoint"]["openrouter"], # without this OpenAI SDK sends requests to a default server i.e. https://api.openai.com/v1; but given is the defualt server for OpenRouter
+    api_key=os.getenv("OPENROUTER_API_KEY" if config["flags"]["credentials_from_env"] else "<api_key>")
     )
 
 def categorize_email(subject:str, body:str) -> str:
@@ -51,7 +53,7 @@ Subject: {subject}
 Body: {body}
 """
     try:
-        response = client.chat.completions.create(model="openai/gpt-3.5-turbo",
+        response = client.chat.completions.create(model=config["chat_completion_model"]["openrouter"],
         messages=[
             {"role":"system", "content":context}, # task instructions
             {"role":"user", "content":prompt} # content on which task should be performed with given instruction

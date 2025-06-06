@@ -14,12 +14,15 @@ import numpy as np
 from typing import List
 from openai import OpenAI
 from dotenv import load_dotenv
+from utils.utils import load_config
 
 load_dotenv() # load environment variables from .env file
+config = load_config() # load project configuration
 
 # load OpenAI API key for embedding
 client = OpenAI(
-    api_key=os.getenv("OPENAI_API_KEY")
+    base_url=config["api_endpoint"]["openai"],
+    api_key=os.getenv("OPENAI_API_KEY") if config["flags"]["credentials_from_env"] else "<api_key>"
 )
 
 def embed_query(query:str) -> np.ndarray:
@@ -34,7 +37,7 @@ def embed_query(query:str) -> np.ndarray:
     """
 
     response = client.embeddings.create(
-        model = "text-embedding-3-small",
+        model = config["embedding_model"]["openai"],
         input = [query]
     )
 

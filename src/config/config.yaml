@@ -1,0 +1,50 @@
+config_version: "1.0"
+
+project:
+  name: mailmind # project name
+  description: AI-powered email automation for customer support
+
+flags:
+  credentials_from_env: true # load all sensitive keys from environment variables
+
+email:
+  polling_interval: NA # currently unused: could be used in future cronjob scheduler
+  inbox_filter: "inbox" # gmail folders to fetch unread emails from
+  mark_as_read: true # whether to mark all email as 'seen' after processing
+
+gmail:
+  imap_host: "imap.gmail.com" # IMAP host for Gmail inbox access
+  smtp_host: "smtp.gmail.com" # SMTP host for sending replies
+
+api_endpoint:
+  openrouter: "https://openrouter.ai/api/v1" # OpenRouter API endpoint
+  openai: "https://api.openai.com/v1" # OpenAI API endpoint
+  
+chat_completion_model:
+  openrouter: "openai/gpt-3.5-turbo" # model name used via OpenRouter
+  openai: "gpt-3.5-turbo" # OpenAI model name
+
+embedding_model:
+  openai: "text-embedding-3-small" # OpenAI embedding model for vectorization
+
+aws:
+  global_region: "eu-north-1" # default region for AWS SDK fallback
+
+  s3:
+    bucket_region: "eu-north-1" # region where S3 bucket is hosted
+    bucket_name: "mailmindbucket" # bucket name
+  
+  dynamodb:
+    db_region: "eu-north-1" # region where DynamoDB table is hosted
+    table_name: "mailmind-email-logs" # table name
+
+semantic_search:
+  top_k: 5 # number of top matching chunks to retrieve from FAISS
+
+paths:
+  env:
+    env_file: ".env" # path to environment variable file; used for dotenv
+
+  faiss:
+    faiss_index_file: "./docs/rag/index.faiss" # path to store FAISS index
+    metadata_file: "./docs/rag/chunks.json" # file that stores metadata for document chunks

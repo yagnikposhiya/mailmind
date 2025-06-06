@@ -13,13 +13,15 @@ import json
 from typing import Dict
 from openai import OpenAI
 from dotenv import load_dotenv
+from utils.utils import load_config
 from rag.semantic_search import retrieve_relevant_context
 
 load_dotenv() # load environment variable from .env file
+config = load_config() # load project configuration
 
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1",
-    api_key=os.getenv("OPENROUTER_API_KEY")
+    base_url=config["api_endpoint"]["openrouter"],
+    api_key=os.getenv("OPENROUTER_API_KEY") if config["flags"]["credentials_from_env"] else "<api_key>"
 )
 
 def generate_reply_mail(category:str, extracted_info: dict) -> str:
@@ -65,7 +67,7 @@ Respond with only the email content. Do not mention that you are an AI. Write as
     try:
         # generate reply using LLM
         response = client.chat.completions.create(
-            model="openai/gpt-3.5-turbo",
+            model=config["chat_completion_model"]["openrouter"],
             messages=[{"role":"user", "content":prompt}],
             temperature=0.7,
             max_tokens=300

@@ -9,7 +9,10 @@ Ensures the email appears in the same thread as the original message by setting 
 import os
 import smtplib
 
+from utils.utils import load_config
 from email.message import EmailMessage
+
+config = load_config() # load project configuration
 
 def send_email_reply(to_address, subject, body, original_msg_id) -> None:
     """
@@ -23,7 +26,7 @@ def send_email_reply(to_address, subject, body, original_msg_id) -> None:
     """
 
     # get sender address
-    from_address = os.getenv("GMAIL_ADDRESS")
+    from_address = os.getenv("GMAIL_ADDRESS") if config["flags"]["credentials_from_env"] else "<gmail_address>"
 
     # create an email message object
     msg = EmailMessage()
@@ -45,6 +48,6 @@ def send_email_reply(to_address, subject, body, original_msg_id) -> None:
     msg.set_content(body)
 
     # connect securely to Gmail SMTP server and send the message
-    with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-        smtp.login(from_address, os.getenv("GMAIL_APP_PASSWORD")) # authenticate with app password
+    with smtplib.SMTP_SSL(config["gmail"]["smtp_host"], 465) as smtp:
+        smtp.login(from_address, os.getenv("GMAIL_APP_PASSWORD") if config["flags"]["credentials_from_env"] else "<gmail_passwd>") # authenticate with app password
         smtp.send_message(msg) # send the composed email

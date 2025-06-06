@@ -10,13 +10,15 @@ import json
 
 from openai import OpenAI
 from dotenv import load_dotenv
+from utils.utils import load_config
 
 load_dotenv() # load environment variables from .env file
+config = load_config() # load project configuration
 
 # intialize OpenAI client via OpenRouter
 client = OpenAI(
-    base_url="https://openrouter.ai/api/v1", # default server for OpenRouter API
-    api_key=os.getenv("OPENROUTER_API_KEY")
+    base_url=config["api_endpoint"]["openrouter"], # default server for OpenRouter API
+    api_key=os.getenv("OPENROUTER_API_KEY" if config["flags"]["credentials_from_env"] else "<api_key>")
 )
 
 def extract_email_info(subject:str, body:str) -> dict:
@@ -58,7 +60,7 @@ Body: {body}
     try:
         # send request to OpenRouter API
         response = client.chat.completions.create(
-            model="openai/gpt-3.5-turbo",
+            model=config["chat_completions_model"]["openrouter"],
             messages=messages,
             temperature=0.0,
             max_tokens=300
