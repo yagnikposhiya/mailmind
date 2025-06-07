@@ -5,12 +5,18 @@ github: @yagnikposhiya
 Periodically polls the Gmail inbox using IMAP to check for new unread emails.
 """
 
+import os
+
+from utils.utils import load_config
 from utils.send_mail import send_email_reply
 from llm.extract_info import extract_email_info
 from llm.categorize_email import categorize_email
 from utils.gmail_utils import fetch_unread_emails
+from rag.embed_documents import build_faiss_index
 from storage.dynamodb_handler import store_email_log
 from llm.generate_response import generate_reply_mail
+
+config = load_config() # load project configuration
 
 emails = fetch_unread_emails() # call the function to get a list of unread emails (each as a dictionary
 
@@ -34,6 +40,9 @@ if emails:
             extracted_info = extract_email_info(mail['subject'], mail['body'])
             mail['extracted_info'] = extracted_info # append extracted_info column to mail metadata and content dict
             print(f"Extracted information: {extracted_info}")
+
+            if not os.path.exists(config["path"]["faiss"]["index_file"]): # check for any one file either index file or metadata file
+                build_faiss_index() # create faiss indexes for current knowledge base
 
             reply_mail = generate_reply_mail(category, extracted_info) # generate a mail reply
             mail['email_reply'] = reply_mail
