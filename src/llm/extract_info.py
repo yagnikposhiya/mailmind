@@ -60,7 +60,7 @@ Body: {body}
     try:
         # send request to OpenRouter API
         response = client.chat.completions.create(
-            model=config["chat_completions_model"]["openrouter"],
+            model=config["chat_completion_model"]["openrouter"],
             messages=messages,
             temperature=0.0,
             max_tokens=300

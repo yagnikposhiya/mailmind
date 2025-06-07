@@ -41,10 +41,10 @@ aws:
 semantic_search:
   top_k: 5 # number of top matching chunks to retrieve from FAISS
 
-paths:
+path:
   env:
     env_file: ".env" # path to environment variable file; used for dotenv
 
   faiss:
-    faiss_index_file: "./docs/rag/index.faiss" # path to store FAISS index
-    metadata_file: "./docs/rag/chunks.json" # file that stores metadata for document chunks
+    index_file: "./data/rag/index.faiss" # path to store FAISS index
+    metadata_file: "./data/rag/chunks.json" # file that stores metadata for document chunks

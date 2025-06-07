@@ -58,10 +58,10 @@ def retrieve_relevant_context(query:str, top_k:int=5) -> List[str]:
     """
 
     # loads FAISS index from disk
-    index = faiss.read_index("rag_index.faiss")
+    index = faiss.read_index(config["path"]["faiss"]["index_file"])
 
     # load associated chunk texts and metadata
-    with open("rag_chunks.json","r") as f:
+    with open(config["path"]["faiss"]["metadata_file"],"r") as f:
         data = json.load(f)
         chunks = data["chunks"]
         meta = data["meta"]
