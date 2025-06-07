@@ -124,10 +124,17 @@ def build_faiss_index() -> Any:
     dim = embeddings.shape[1] # dimentionsality of embedding vectors
     index = faiss.IndexFlatL2(dim) # L2-based flat index
     index.add(embeddings) # add all embedding vectors to the index
-    faiss.write_index(index, "rag_index.faiss") # save the index to disk
+
+    if os.path.isdir(os.path.dirname(config["path"]["faiss"]["index_file"])): # check if directory exists in "./data/rag/index.faiss"
+        print(f"Directory exists: {config["path"]["faiss"]["index_file"]}")
+    else:
+        os.makedirs(os.path.dirname(config["path"]["faiss"]["index_file"])) # if not then create it
+        print(f"Directory created: {config["path"]["faiss"]["index_file"]}")
+
+    faiss.write_index(index, config["path"]["faiss"]["index_file"]) # save the index to disk
 
     # save the chunks and their metadata for later use (semantic search)
-    with open("rag_chunks.json","w") as f:
+    with open(config["path"]["faiss"]["metadata_file"],"w") as f:
         json.dump({"chunks": texts, "meta": metadata}, f, indent=2)
 
     print("Embedding pipeline completed.")
