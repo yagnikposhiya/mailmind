@@ -39,7 +39,7 @@ You are an intelligent email classifier working for a customer support system of
 Only classify the email into the following categories if the content is related to jewellery, jewellery manufacturing, order issues, product feedback, or customer inquiries about jewellery:
 
 1. Inquiry
-2. Complaint
+2. Order Request
 3. Feedback
 
 If the email is **not relevant** to jewellery or your business domain (e.g. job applications, unrelated offers), then classify it strictly as:
